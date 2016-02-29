@@ -10,3 +10,7 @@ class FilterChecker(filter: String) {
     yield iOObject
   }
 }
+
+object FilterChecker {
+  def apply(filter: String) = new FilterChecker(filter)
+}
