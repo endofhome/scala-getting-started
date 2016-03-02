@@ -31,11 +31,14 @@ class Matcher (filter: String, val rootLocation : String = new File(".").getCano
     }
  
     val contentFilteredFiles = contentFilter match {
-      case Some(dataFilter) => matchedFiles filter(iOObject=>
-        FilterChecker(dataFilter).findMatchedContentCount(iOObject.file) > 0)
-        case None => matchedFiles
+      case Some(dataFilter) =>
+        matchedFiles.map(iOObject=>
+          (iOObject, Some(FilterChecker(dataFilter)
+              .findMatchedContentCount(iOObject.file))))
+        .filter(matchTuple=>matchTuple._2.get > 0)
+        case None => matchedFiles map (iOObject=>(iOObject, None))
     }
     
-    contentFilteredFiles map(iOObject => iOObject.name)
+    contentFilteredFiles map{case (iOObject, count) => (iOObject.name, count) }
   }
 }
