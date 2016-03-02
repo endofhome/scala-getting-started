@@ -32,8 +32,8 @@ class Matcher (filter: String, val rootLocation : String = new File(".").getCano
  
     val contentFilteredFiles = contentFilter match {
       case Some(dataFilter) => matchedFiles filter(iOObject=>
-        FilterChecker(dataFilter).matchesFileContent(iOObject.file))
-      case None => matchedFiles
+        FilterChecker(dataFilter).findMatchedContentCount(iOObject.file) > 0)
+        case None => matchedFiles
     }
     
     contentFilteredFiles map(iOObject => iOObject.name)

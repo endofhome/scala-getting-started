@@ -4,7 +4,12 @@ import java.io.File
 import scala.util.control.NonFatal
 
 class FilterChecker(filter: String) {
-  def matches(content : String) = content contains filter
+  val filterAsRegex = filter.r
+  def matches(content : String) = 
+    filterAsRegex findFirstMatchIn content match {
+    case Some(_) => true
+    case None => false
+  }
 
   def findMatchedFiles(iOObjects : List[IOObject]) =
     for(iOObject <- iOObjects
@@ -12,20 +17,24 @@ class FilterChecker(filter: String) {
         if(matches(iOObject.name)))
     yield iOObject
     
-  def matchesFileContent(file: File) = {
+  def findMatchedContentCount(file: File) = {
+    def getFilterMatchCount(content: String) =
+      (filterAsRegex findAllIn content).length
+    
     import scala.io.Source
     try {
       val fileSource = Source.fromFile(file)
       try
-        fileSource.getLines() exists(line=>matches(line))
+        fileSource.getLines().foldLeft(0)(
+            (accumulator, line)=> accumulator + getFilterMatchCount(line))
       catch {
-        case NonFatal(_) => false
+        case NonFatal(_) => 0
       }
       finally
         fileSource.close()
     }
     catch {
-      case NonFatal(_) => false
+      case NonFatal(_) => 0
     }
   } 
 }
