@@ -1,5 +1,7 @@
 package fileSearcher
 
+import java.io.File
+
 class FilterChecker(filter: String) {
   def matches(content : String) = content contains filter
 
