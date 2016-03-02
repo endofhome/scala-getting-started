@@ -13,7 +13,7 @@ class MatcherTests extends FlatSpec {
   
   "Matcher using a directory containing one file matching the filter" should
   "return a list with that file name" in {
-    val matcher = new Matcher("txt", new File("./testfiles").getCanonicalPath())
+    val matcher = new Matcher("txt", new File("." + File.separator + "testfiles").getCanonicalPath())
     val results = matcher.execute()
     assert(results == List("testFile.txt"))
   }
